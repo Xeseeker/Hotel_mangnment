@@ -65,3 +65,16 @@ export const findPaymentByReservationId = async (reservationId) => {
 
   return rows[0] || null;
 };
+
+export const findPaymentByTransactionId = async (transactionId) => {
+  const rows = await query(
+    `SELECT id, reservation_id, amount, method, status, transaction_id
+     FROM payments
+     WHERE transaction_id = ?
+     ORDER BY id DESC
+     LIMIT 1`,
+    [transactionId],
+  );
+
+  return rows[0] || null;
+};

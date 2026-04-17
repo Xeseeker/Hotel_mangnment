@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import "./config/env.js"; // IMPORTANT (forces env load first)
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import reservationRoutes from "./routes/reservationRoutes.js";
@@ -8,8 +8,6 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoute.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
-
-dotenv.config();
 
 const app = express();
 
@@ -41,4 +39,9 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log("DB_HOST:", process.env.DB_HOST);
+  console.log("ENV CHECK:");
+  console.log("DB_HOST:", process.env.DB_HOST);
+  console.log("DB_USER:", process.env.DB_USER);
+  console.log("DB_PASSWORD:", process.env.DB_PASSWORD);
 });

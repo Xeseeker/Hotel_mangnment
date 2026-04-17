@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyReservations from "./pages/MyReservations";
 import MeetingRoom from "./pages/MeetingRoom";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageRooms from "./pages/admin/ManageRooms";
@@ -47,6 +48,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
 
       <Route
         path="/admin"

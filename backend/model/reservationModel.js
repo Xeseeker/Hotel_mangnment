@@ -9,7 +9,7 @@ const createExecutor = (connection) =>
   };
 
 export const createReservation = async (
-  { user_id, room_id, check_in, check_out, total_price, status = "pending" },
+  { user_id, room_id, check_in, check_out, total_price, status = "confirmed" },
   connection,
 ) => {
   const [result] = await connection.execute(
@@ -86,7 +86,14 @@ export const hasOverlappingReservation = async (
   return Boolean(rows[0]);
 };
 
-export const updateReservationStatus = async (id, status, connection = null) => {
+export const updateReservationStatus = async (
+  id,
+  status,
+  connection = null,
+) => {
   const executor = createExecutor(connection);
-  await executor.execute("UPDATE reservations SET status = ? WHERE id = ?", [status, id]);
+  await executor.execute("UPDATE reservations SET status = ? WHERE id = ?", [
+    status,
+    id,
+  ]);
 };

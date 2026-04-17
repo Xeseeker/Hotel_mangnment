@@ -35,7 +35,7 @@ export const validateRoom = (req) => {
     return "Room number, type and price are required";
   }
 
-  if (!["Standard", "Deluxe", "Suite", "Penthouse"].includes(type)) {
+  if (!["single", "double", "suite"].includes(type)) {
     return "Invalid room type";
   }
 
@@ -79,7 +79,7 @@ export const validatePayment = (req) => {
     return "Invalid payment method";
   }
 
-  if (status && !["pending", "completed", "failed"].includes(status)) {
+  if (status && !["completed", "failed"].includes(status)) {
     return "Invalid payment status";
   }
 

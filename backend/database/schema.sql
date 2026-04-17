@@ -22,7 +22,7 @@ CREATE TABLE reservations (
   room_id INT NOT NULL,
   check_in DATE NOT NULL,
   check_out DATE NOT NULL,
-  status ENUM('pending','confirmed','cancelled') DEFAULT 'pending',
+  status ENUM('confirmed','cancelled') DEFAULT 'confirmed',
   total_price DECIMAL(10,2) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (room_id) REFERENCES rooms(id)
@@ -36,4 +36,18 @@ CREATE TABLE payments (
   status ENUM('pending','completed','failed') NOT NULL,
   transaction_id VARCHAR(255),
   FOREIGN KEY (reservation_id) REFERENCES reservations(id)
+);
+
+-- Store booking intent for Chapa payment flow
+CREATE TABLE payment_intents (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  tx_ref VARCHAR(255) NOT NULL UNIQUE,
+  user_id INT NOT NULL,
+  room_id INT NOT NULL,
+  check_in DATE NOT NULL,
+  check_out DATE NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (room_id) REFERENCES rooms(id)
 );

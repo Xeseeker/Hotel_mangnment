@@ -1,34 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Skeleton from "../../components/ui/Skeleton";
 import StatusPill from "../../components/luxury/StatusPill";
-
-const mockUsers = [
-  {
-    id: 1,
-    name: "John Admin",
-    email: "admin@hotel.com",
-    role: "admin",
-    created_at: "2024-01-01",
-  },
-  {
-    id: 2,
-    name: "Jane Reception",
-    email: "reception@hotel.com",
-    role: "receptionist",
-    created_at: "2024-01-15",
-  },
-  {
-    id: 3,
-    name: "Bob Customer",
-    email: "bob@email.com",
-    role: "customer",
-    created_at: "2024-02-01",
-  },
-];
+import { userService } from "../../services/userService";
 
 const ManageUsers = () => {
-  const [users] = useState(mockUsers);
-  const [loading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await userService.getAllUsers();
+        setUsers(response.data || []);
+      } catch (error) {
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   if (loading) {
     return (
@@ -66,13 +57,20 @@ const ManageUsers = () => {
             </thead>
             <tbody className="divide-y divide-gold-100/80">
               {users.map((user) => (
-                <tr key={user.id} className="transition-colors duration-300 hover:bg-cream-50/80">
-                  <td className="table-body-cell font-medium text-elysium-ink">{user.name}</td>
+                <tr
+                  key={user.id}
+                  className="transition-colors duration-300 hover:bg-cream-50/80"
+                >
+                  <td className="table-body-cell font-medium text-elysium-ink">
+                    {user.name}
+                  </td>
                   <td className="table-body-cell">{user.email}</td>
                   <td className="table-body-cell">
                     <StatusPill status={user.role} domain="role" />
                   </td>
-                  <td className="table-body-cell">{new Date(user.created_at).toLocaleDateString()}</td>
+                  <td className="table-body-cell">
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -125,9 +125,15 @@ const ManageRooms = () => {
           <div>
             <p className="section-kicker">Inventory</p>
             <h1 className="heading-lg mt-4 text-white">Manage rooms</h1>
-            <p className="mt-3 max-w-xl text-white/75">Add, edit, or remove rooms from Elysium Grand.</p>
+            <p className="mt-3 max-w-xl text-white/75">
+              Add, edit, or remove rooms from Elysium Grand.
+            </p>
           </div>
-          <button type="button" onClick={() => handleOpenModal()} className="btn-primary shrink-0 px-8">
+          <button
+            type="button"
+            onClick={() => handleOpenModal()}
+            className="btn-primary shrink-0 px-8"
+          >
             + Add room
           </button>
         </div>
@@ -137,7 +143,11 @@ const ManageRooms = () => {
         <div className="panel-muted py-16 text-center">
           <h3 className="heading-sm text-elysium-ink">No rooms yet</h3>
           <p className="mt-2 text-dark-600">Start by adding your first room.</p>
-          <button type="button" onClick={() => handleOpenModal()} className="btn-primary mt-8">
+          <button
+            type="button"
+            onClick={() => handleOpenModal()}
+            className="btn-primary mt-8"
+          >
             Add room
           </button>
         </div>
@@ -162,11 +172,21 @@ const ManageRooms = () => {
                 </div>
               </div>
               <div className="p-5">
-                <h3 className="font-serif text-lg font-semibold text-elysium-ink">{room.type || "Standard Room"}</h3>
-                <p className="mt-1 text-sm text-gold-800/80">Room {room.room_number}</p>
-                <p className="mt-4 font-serif text-xl font-bold text-gold-600">${room.price}/night</p>
+                <h3 className="font-serif text-lg font-semibold text-elysium-ink">
+                  {room.type || "Standard Room"}
+                </h3>
+                <p className="mt-1 text-sm text-gold-800/80">
+                  Room {room.room_number}
+                </p>
+                <p className="mt-4 font-serif text-xl font-bold text-gold-600">
+                  ${room.price}/night
+                </p>
                 <div className="mt-5 flex gap-3">
-                  <button type="button" onClick={() => handleOpenModal(room)} className="btn-secondary flex-1 py-2.5 text-sm">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(room)}
+                    className="btn-secondary flex-1 py-2.5 text-sm"
+                  >
                     Edit
                   </button>
                   <button
@@ -215,10 +235,9 @@ const ManageRooms = () => {
               required
             >
               <option value="">Select Type</option>
-              <option value="Standard">Standard</option>
-              <option value="Deluxe">Deluxe</option>
-              <option value="Suite">Suite</option>
-              <option value="Penthouse">Penthouse</option>
+              <option value="single">Single</option>
+              <option value="double">Double</option>
+              <option value="suite">Suite</option>
             </select>
           </div>
           <div>

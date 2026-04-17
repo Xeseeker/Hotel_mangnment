@@ -24,8 +24,20 @@ router.post(
   validate(validateReservation),
   createReservationEntry,
 );
-router.patch("/:id/cancel", authorize("admin", "receptionist", "customer"), cancelReservationEntry);
-router.patch("/:id/check-in", authorize("admin", "receptionist"), checkInReservationEntry);
-router.patch("/:id/check-out", authorize("admin", "receptionist"), checkOutReservationEntry);
+router.patch(
+  "/:id/cancel",
+  authorize("admin", "receptionist", "customer"),
+  cancelReservationEntry,
+);
+router.patch(
+  "/:id/check-in",
+  authorize("admin", "receptionist"),
+  checkInReservationEntry,
+);
+router.patch(
+  "/:id/check-out",
+  authorize("admin", "receptionist"),
+  checkOutReservationEntry,
+);
 
 export default router;

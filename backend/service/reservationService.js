@@ -25,7 +25,10 @@ const ensureReservationAccess = (reservation, user) => {
     return;
   }
 
-  throw new AppError("You do not have permission to access this reservation", 403);
+  throw new AppError(
+    "You do not have permission to access this reservation",
+    403,
+  );
 };
 
 export const listReservations = async (user) => {
@@ -47,58 +50,13 @@ export const getReservation = async (id, user) => {
   return reservation;
 };
 
-export const createReservationRecord = async ({
-  userId,
-  roomId,
-  checkIn,
-  checkOut,
-}) => {
-  const room = await findRoomById(roomId);
-
-  if (!room) {
-    throw new AppError("Room not found", 404);
-  }
-
-  if (room.status === "maintenance") {
-    throw new AppError("Room is under maintenance", 400);
-  }
-
-  const conflict = await hasOverlappingReservation(roomId, checkIn, checkOut);
-
-  if (conflict) {
-    throw new AppError("Room is already booked for the selected dates", 409);
-  }
-
-  const nights = calculateNights(checkIn, checkOut);
-
-  if (nights <= 0) {
-    throw new AppError("Reservation must be at least one night", 400);
-  }
-
-  const totalPrice = Number(room.price) * nights;
-  const connection = await getConnection();
-
-  try {
-    await connection.beginTransaction();
-    const reservation = await createReservation(
-      {
-        user_id: userId,
-        room_id: roomId,
-        check_in: checkIn,
-        check_out: checkOut,
-        total_price: totalPrice,
-        status: "pending",
-      },
-      connection,
-    );
-    await connection.commit();
-    return reservation;
-  } catch (error) {
-    await connection.rollback();
-    throw error;
-  } finally {
-    connection.release();
-  }
+// Reservation creation is now atomic with payment (see paymentService.js)
+// This function is deprecated and should not be used for direct reservation creation before payment.
+export const createReservationRecord = async () => {
+  throw new AppError(
+    "Direct reservation creation is not allowed. Use payment flow.",
+    400,
+  );
 };
 
 export const cancelReservationRecord = async (id, user) => {
