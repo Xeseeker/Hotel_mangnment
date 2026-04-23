@@ -1,0 +1,62 @@
+# Production-style Docker Compose setup
+# Use this when you want a cleaner containerized run that behaves like deployment.
+# Start with: docker compose up --build
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hotel_backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Production mode:
+      # - app uses the start script
+      # - env loader treats this as non-development
+      NODE_ENV: production
+      PORT: 5000
+      CLIENT_URL: http://localhost:5173
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: hotel_user
+      DB_PASSWORD: hotel_password
+      DB_NAME: HotelDB
+      DB_CONNECTION_LIMIT: 10
+      JWT_SECRET: change-me
+      JWT_EXPIRES_IN: 1d
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      CHAPA_SECRET_KEY: ${CHAPA_SECRET_KEY:-}
+      CHAPA_CALLBACK_URL: ${CHAPA_CALLBACK_URL:-http://localhost:5000/api/payments/chapa/confirm}
+      CHAPA_RETURN_URL: ${CHAPA_RETURN_URL:-http://localhost:5173/payment-success}
+    ports:
+      - "5000:5000"
+
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: hotel_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: HotelDB
+      MYSQL_USER: hotel_user
+      MYSQL_PASSWORD: hotel_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+volumes:
+  mysql_data:

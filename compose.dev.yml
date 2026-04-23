@@ -1,0 +1,65 @@
+# Development Docker Compose setup
+# Use this when you want live-reload and editable source code from your machine.
+# Start with: docker compose -f compose.dev.yml up --build
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: hotel_backend_dev
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Development mode:
+      # - app uses npm run dev
+      # - env loader reads .env.local
+      NODE_ENV: development
+      PORT: 5005
+      CLIENT_URL: http://localhost:5173
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: hotel_user
+      DB_PASSWORD: hotel_password
+      DB_NAME: HotelDB
+      DB_CONNECTION_LIMIT: 10
+      JWT_SECRET: supersecretjwtkey
+      JWT_EXPIRES_IN: 1d
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      CHAPA_SECRET_KEY: ${CHAPA_SECRET_KEY:-}
+      CHAPA_CALLBACK_URL: ${CHAPA_CALLBACK_URL:-http://localhost:5005/api/payments/chapa/confirm}
+      CHAPA_RETURN_URL: ${CHAPA_RETURN_URL:-http://localhost:5173/payment-success}
+    ports:
+      - "5005:5005"
+    volumes:
+      # Mount your backend source code into the container so edits reload immediately.
+      - ./backend:/app
+      # Keep container node_modules separate from your host machine.
+      - /app/node_modules
+    command: npm run dev
+
+  mysql:
+    image: mysql:8.4
+    container_name: hotel_mysql_dev
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: HotelDB
+      MYSQL_USER: hotel_user
+      MYSQL_PASSWORD: hotel_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+
+volumes:
+  mysql_dev_data:

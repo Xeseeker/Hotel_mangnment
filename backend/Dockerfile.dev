@@ -1,0 +1,16 @@
+# Development image:
+# - keeps all dependencies
+# - designed for bind mounts and live reload
+# - uses the dev script instead of the production start script
+FROM node:20-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+
+COPY package*.json ./
+RUN npm ci
+
+EXPOSE 5005
+
+CMD ["npm", "run", "dev"]
