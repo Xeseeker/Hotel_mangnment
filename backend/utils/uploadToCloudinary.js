@@ -1,10 +1,10 @@
 import cloudinary, { assertCloudinaryConfig } from "../config/cloudinary.js";
 import { AppError } from "./AppError.js";
 
-export const uploadImageBuffer = (buffer, folder = "hotel-management/rooms") =>
-  new Promise((resolve, reject) => {
-    assertCloudinaryConfig();
+export const uploadImageBuffer = async (buffer, folder = "hotel-management/rooms") => {
+  assertCloudinaryConfig();
 
+  return await new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder,
@@ -32,3 +32,4 @@ export const uploadImageBuffer = (buffer, folder = "hotel-management/rooms") =>
 
     uploadStream.end(buffer);
   });
+};

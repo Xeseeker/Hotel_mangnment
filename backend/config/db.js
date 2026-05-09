@@ -20,14 +20,16 @@ export const query = async (sql, params = []) => {
 export const getConnection = async () => pool.getConnection();
 
 // Test connection once at startup
-pool
-  .getConnection()
-  .then((conn) => {
-    console.log("✅ MySQL pool connected!");
+const testPoolConnection = async () => {
+  try {
+    const conn = await pool.getConnection();
+    console.log("MySQL pool connected!");
     conn.release(); // release connection back to pool
-  })
-  .catch((err) => {
-    console.error("❌ MySQL pool connection error:", err.message);
-  });
+  } catch (err) {
+    console.error("MySQL pool connection error:", err.message);
+  }
+};
+
+testPoolConnection();
 
 export default pool;
